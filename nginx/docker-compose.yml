@@ -1,0 +1,39 @@
+version: "3.8"
+ 
+services:
+  userapi:
+    build: ./app
+    container_name: userapi
+    # NOTE: not publishing this port to the host on purpose in the
+    # "real" topology — clients should only reach it via NGINX.
+    expose:
+      - "5000"
+    environment:
+      - DATABASE_PATH=/data/app.db
+      - PORT=5000
+      - LOG_LEVEL=INFO
+    volumes:
+      - userapi_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 15s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    restart: unless-stopped
+ 
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: nginx-proxy
+    ports:
+      - "8080:8080"
+    volumes:
+      # Swap this line between nginx.conf.WORKING and nginx.conf.BROKEN
+      # to demonstrate the controlled failure.
+      - ./nginx/nginx.conf.BROKEN:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - userapi
+    restart: unless-stopped
+ 
+volumes:
+  userapi_data:

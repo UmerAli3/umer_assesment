@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+venv/
+.venv/
+
+# Environment/secrets
+.env
+.env.*
+!.env.example
+
+# Test artifacts
+.pytest_cache/
+test-results/
+
+# SQLite
+*.db
+*.sqlite
+*.sqlite3
+
+# Jenkins
+*.log
+
+# OS/editor
+.DS_Store
+.vscode/
+.idea/

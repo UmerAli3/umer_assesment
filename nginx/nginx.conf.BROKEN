@@ -1,0 +1,38 @@
+# DELIBERATE FAILURE VERSION — for Task 3 controlled-failure exercise.
+# ONLY DIFFERENCE from nginx.conf.WORKING: upstream port changed
+# from 5000 (correct, matches container EXPOSE/PORT) to 5099 (wrong / nothing listens there).
+
+events {
+    worker_connections 1024;
+}
+
+http {
+    log_format main '$remote_addr - $remote_user [$time_local] "$request" '
+                     '$status $body_bytes_sent "$http_referer" '
+                     '"$http_user_agent" upstream=$upstream_addr rt=$request_time';
+
+    access_log /var/log/nginx/access.log main;
+    error_log  /var/log/nginx/error.log warn;
+
+    upstream backend_app {
+        # <<< INTENTIONAL BUG: wrong port (should be 5000) >>>
+        server userapi:5099;
+    }
+
+    server {
+        listen 8080;
+        server_name _;
+
+        location / {
+            proxy_pass http://backend_app;
+
+            proxy_set_header Host              $host;
+            proxy_set_header X-Real-IP         $remote_addr;
+            proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+
+            proxy_connect_timeout 5s;
+            proxy_read_timeout    10s;
+        }
+    }
+}
