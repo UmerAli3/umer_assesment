@@ -1,0 +1,67 @@
+[
+  {
+    "concurrency": 50,
+    "requests": 6447,
+    "errors": 0,
+    "error_pct": 0.0,
+    "throughput": 789.03,
+    "avg_ms": 62.75,
+    "p50_ms": 62.48,
+    "p95_ms": 71.44,
+    "p99_ms": 80.02,
+    "peak_cpu": 49.8,
+    "peak_ram_mb": 87.7
+  },
+  {
+    "concurrency": 100,
+    "requests": 6149,
+    "errors": 0,
+    "error_pct": 0.0,
+    "throughput": 741.06,
+    "avg_ms": 132.85,
+    "p50_ms": 128.85,
+    "p95_ms": 171.12,
+    "p99_ms": 212.66,
+    "peak_cpu": 54.0,
+    "peak_ram_mb": 87.8
+  },
+  {
+    "concurrency": 200,
+    "requests": 6443,
+    "errors": 0,
+    "error_pct": 0.0,
+    "throughput": 748.7,
+    "avg_ms": 259.16,
+    "p50_ms": 260.56,
+    "p95_ms": 291.79,
+    "p99_ms": 295.99,
+    "peak_cpu": 51.8,
+    "peak_ram_mb": 87.8
+  },
+  {
+    "concurrency": 300,
+    "requests": 6549,
+    "errors": 0,
+    "error_pct": 0.0,
+    "throughput": 747.73,
+    "avg_ms": 384.93,
+    "p50_ms": 394.32,
+    "p95_ms": 439.35,
+    "p99_ms": 453.93,
+    "peak_cpu": 49.8,
+    "peak_ram_mb": 87.8
+  },
+  {
+    "concurrency": 500,
+    "requests": 7058,
+    "errors": 0,
+    "error_pct": 0.0,
+    "throughput": 734.66,
+    "avg_ms": 621.94,
+    "p50_ms": 632.8,
+    "p95_ms": 730.33,
+    "p99_ms": 744.49,
+    "peak_cpu": 60.0,
+    "peak_ram_mb": 87.8
+  }
+]
