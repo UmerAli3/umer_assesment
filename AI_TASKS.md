@@ -1,21 +1,3 @@
-# AI_TASKS.md — AI-Assisted QA/DevOps Work Log
-
-A quick note before the tasks themselves: for all 10 of these, I actually asked an AI
-assistant (Claude) the prompts below, took whatever it gave me, and then went through
-it line by line — the same way I'd review a junior engineer's PR. Some of what came
-back was genuinely good and I just implemented it. Some of it was subtly wrong, or
-technically correct but impractical, or missing an obvious case. I've tried to be
-honest about which is which rather than pretending everything the AI produced was
-perfect. Where I actually ran commands, tests, or queries, I've said so and pointed
-at the evidence file. Where I didn't have a real server to test against, I've said
-that too instead of faking output.
-
-Cross-references: the actual working code for most of this lives in `/api-tests`,
-`/jmeter`, `/database`, `/monitoring`, `/qa-manual` and `/evidence` per the folder
-structure — this file is the narrative of *how* that work got built with AI in the
-loop, not a duplicate of the code itself.
-
----
 
 ## AI Task 1 — Generate API Test Cases from a Collection
 
