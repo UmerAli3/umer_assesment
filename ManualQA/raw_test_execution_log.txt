@@ -1,0 +1,247 @@
++ cd /home/claude/userapi
++ rm -f qa_test.db
++ export DATABASE_PATH=/home/claude/userapi/qa_test.db
++ DATABASE_PATH=/home/claude/userapi/qa_test.db
++ export PORT=5000
++ PORT=5000
++ APP_PID=219
++ sleep 2
++ python3 app.py
++ BASE=http://127.0.0.1:5000
++ echo '=== APP STARTED, PID=219 ==='
+=== APP STARTED, PID=219 ===
++ curl -s -m 3 http://127.0.0.1:5000/health
+{"db":"connected","status":"ok"}
++ echo
+
++ echo -e '\n### TC01: GET /health (smoke) ###'
+
+### TC01: GET /health (smoke) ###
++ curl -s -m 3 -w '\nHTTP:%{http_code}\n' http://127.0.0.1:5000/health
+{"db":"connected","status":"ok"}
+
+HTTP:200
++ echo -e '\n### TC02: GET /users (functional - list all) ###'
+
+### TC02: GET /users (functional - list all) ###
++ curl -s -m 3 -w '\nHTTP:%{http_code}\n' http://127.0.0.1:5000/users
++ head -c 400
+[{"email":"ali.khan@example.com","id":1,"name":"Ali Khan","status":"active"},{"email":"sara.ahmed@example.com","id":2,"name":"Sara Ahmed","status":"active"},{"email":"bilal.raza@example.com","id":3,"name":"Bilal Raza","status":"inactive"},{"email":"ayesha.noor@example.com","id":4,"name":"Ayesha Noor","status":"pending"},{"email":"hamza.tariq@example.com","id":5,"name":"Hamza Tariq","status":"activ+ echo
+
++ echo -e '\n### TC03: GET /users/1 (positive - valid existing id) ###'
+
+### TC03: GET /users/1 (positive - valid existing id) ###
++ curl -s -m 3 -w '\nHTTP:%{http_code}\n' http://127.0.0.1:5000/users/1
+{"email":"ali.khan@example.com","id":1,"name":"Ali Khan","status":"active"}
+
+HTTP:200
++ echo -e '\n### TC04: GET /users/9999 (negative - non-existent id) ###'
+
+### TC04: GET /users/9999 (negative - non-existent id) ###
++ curl -s -m 3 -w '\nHTTP:%{http_code}\n' http://127.0.0.1:5000/users/9999
+{"error":"user not found"}
+
+HTTP:404
++ echo -e '\n### TC05: GET /users/abc (boundary/invalid - non-numeric id) ###'
+
+### TC05: GET /users/abc (boundary/invalid - non-numeric id) ###
++ curl -s -m 3 -w '\nHTTP:%{http_code}\n' http://127.0.0.1:5000/users/abc
+{"error":"id must be an integer"}
+
+HTTP:400
++ echo -e '\n### TC06: GET /users/0 (boundary - id zero) ###'
+
+### TC06: GET /users/0 (boundary - id zero) ###
++ curl -s -m 3 -w '\nHTTP:%{http_code}\n' http://127.0.0.1:5000/users/0
+{"error":"user not found"}
+
+HTTP:404
++ echo -e '\n### TC07: GET /users/-1 (boundary - negative id) ###'
+
+### TC07: GET /users/-1 (boundary - negative id) ###
++ curl -s -m 3 -w '\nHTTP:%{http_code}\n' http://127.0.0.1:5000/users/-1
+{"error":"id must be an integer"}
+
+HTTP:400
++ echo -e '\n### TC08: POST /users valid (functional - create) ###'
+
+### TC08: POST /users valid (functional - create) ###
++ curl -s -m 3 -w '\nHTTP:%{http_code}\n' -X POST http://127.0.0.1:5000/users -H 'Content-Type: application/json' -d '{"name":"QA Tester","email":"qa.tester@example.com","status":"active"}'
+{"email":"qa.tester@example.com","id":11,"name":"QA Tester","status":"active"}
+
+HTTP:201
++ echo -e '\n### TC09: POST /users missing name field (negative) ###'
+
+### TC09: POST /users missing name field (negative) ###
++ curl -s -m 3 -w '\nHTTP:%{http_code}\n' -X POST http://127.0.0.1:5000/users -H 'Content-Type: application/json' -d '{"email":"missingname@example.com","status":"active"}'
+{"error":"name is required and must be a string"}
+
+HTTP:400
++ echo -e '\n### TC10: POST /users missing email field (negative) ###'
+
+### TC10: POST /users missing email field (negative) ###
++ curl -s -m 3 -w '\nHTTP:%{http_code}\n' -X POST http://127.0.0.1:5000/users -H 'Content-Type: application/json' -d '{"name":"No Email","status":"active"}'
+{"error":"a valid email is required"}
+
+HTTP:400
++ echo -e '\n### TC11: POST /users invalid email format (negative) ###'
+
+### TC11: POST /users invalid email format (negative) ###
++ curl -s -m 3 -w '\nHTTP:%{http_code}\n' -X POST http://127.0.0.1:5000/users -H 'Content-Type: application/json' -d '{"name":"Bad Email","email":"not-an-email","status":"active"}'
+{"error":"a valid email is required"}
+
+HTTP:400
++ echo -e '\n### TC12: POST /users duplicate email (negative - integrity) ###'
+
+### TC12: POST /users duplicate email (negative - integrity) ###
++ curl -s -m 3 -w '\nHTTP:%{http_code}\n' -X POST http://127.0.0.1:5000/users -H 'Content-Type: application/json' -d '{"name":"Duplicate","email":"ali.khan@example.com","status":"active"}'
+{"error":"email already exists"}
+
+HTTP:409
++ echo -e '\n### TC13: POST /users invalid status value (negative) ###'
+
+### TC13: POST /users invalid status value (negative) ###
++ curl -s -m 3 -w '\nHTTP:%{http_code}\n' -X POST http://127.0.0.1:5000/users -H 'Content-Type: application/json' -d '{"name":"Bad Status","email":"badstatus@example.com","status":"deleted"}'
+{"error":"status must be one of ['active', 'inactive', 'pending']"}
+
+HTTP:400
++ echo -e '\n### TC14: POST /users missing status - defaults to active (boundary/functional) ###'
+
+### TC14: POST /users missing status - defaults to active (boundary/functional) ###
++ curl -s -m 3 -w '\nHTTP:%{http_code}\n' -X POST http://127.0.0.1:5000/users -H 'Content-Type: application/json' -d '{"name":"No Status Field","email":"nostatus@example.com"}'
+{"email":"nostatus@example.com","id":12,"name":"No Status Field","status":"active"}
+
+HTTP:201
++ echo -e '\n### TC15: POST /users empty body (negative) ###'
+
+### TC15: POST /users empty body (negative) ###
++ curl -s -m 3 -w '\nHTTP:%{http_code}\n' -X POST http://127.0.0.1:5000/users -H 'Content-Type: application/json' -d '{}'
+{"error":"request body must be JSON"}
+
+HTTP:400
++ echo -e '\n### TC16: POST /users non-JSON body (negative) ###'
+
+### TC16: POST /users non-JSON body (negative) ###
++ curl -s -m 3 -w '\nHTTP:%{http_code}\n' -X POST http://127.0.0.1:5000/users -H 'Content-Type: application/json' -d 'not json at all'
+{"error":"request body must be JSON"}
+
+HTTP:400
++ echo -e '\n### TC17: PUT /users/2 valid update (functional) ###'
+
+### TC17: PUT /users/2 valid update (functional) ###
++ curl -s -m 3 -w '\nHTTP:%{http_code}\n' -X PUT http://127.0.0.1:5000/users/2 -H 'Content-Type: application/json' -d '{"status":"inactive"}'
+{"email":"sara.ahmed@example.com","id":2,"name":"Sara Ahmed","status":"inactive"}
+
+HTTP:200
++ echo -e '\n### TC18: PUT /users/9999 non-existent id (negative) ###'
+
+### TC18: PUT /users/9999 non-existent id (negative) ###
++ curl -s -m 3 -w '\nHTTP:%{http_code}\n' -X PUT http://127.0.0.1:5000/users/9999 -H 'Content-Type: application/json' -d '{"status":"active"}'
+{"error":"user not found"}
+
+HTTP:404
++ echo -e '\n### TC19: PUT /users/2 to a duplicate email (negative - integrity) ###'
+
+### TC19: PUT /users/2 to a duplicate email (negative - integrity) ###
++ curl -s -m 3 -w '\nHTTP:%{http_code}\n' -X PUT http://127.0.0.1:5000/users/2 -H 'Content-Type: application/json' -d '{"email":"ali.khan@example.com"}'
+{"error":"email already exists"}
+
+HTTP:409
++ echo -e '\n### TC20: DELETE /users/1 - unsupported method (negative) ###'
+
+### TC20: DELETE /users/1 - unsupported method (negative) ###
++ curl -s -m 3 -w '\nHTTP:%{http_code}\n' -X DELETE http://127.0.0.1:5000/users/1
+<!doctype html>
+<html lang=en>
+<title>405 Method Not Allowed</title>
+<h1>Method Not Allowed</h1>
+<p>The method is not allowed for the requested URL.</p>
+
+HTTP:405
++ echo -e '\n### TC21: PATCH /users/1 - unsupported method (negative) ###'
+
+### TC21: PATCH /users/1 - unsupported method (negative) ###
++ curl -s -m 3 -w '\nHTTP:%{http_code}\n' -X PATCH http://127.0.0.1:5000/users/1
+<!doctype html>
+<html lang=en>
+<title>405 Method Not Allowed</title>
+<h1>Method Not Allowed</h1>
+<p>The method is not allowed for the requested URL.</p>
+
+HTTP:405
++ echo -e '\n### TC22: GET /nonexistent-route (negative - unknown endpoint) ###'
+
+### TC22: GET /nonexistent-route (negative - unknown endpoint) ###
++ curl -s -m 3 -w '\nHTTP:%{http_code}\n' http://127.0.0.1:5000/nonexistent-route
+<!doctype html>
+<html lang=en>
+<title>404 Not Found</title>
+<h1>Not Found</h1>
+<p>The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.</p>
+
+HTTP:404
++ echo -e '\n### TC23: GET /users?status=active (integration - filter query param) ###'
+
+### TC23: GET /users?status=active (integration - filter query param) ###
++ curl -s -m 3 -w '\nHTTP:%{http_code}\n' 'http://127.0.0.1:5000/users?status=active'
++ head -c 300
+[{"email":"ali.khan@example.com","id":1,"name":"Ali Khan","status":"active"},{"email":"hamza.tariq@example.com","id":5,"name":"Hamza Tariq","status":"active"},{"email":"usman.farooq@example.com","id":7,"name":"Usman Farooq","status":"active"},{"email":"obrien.test@example.com","id":9,"name":"O'Brien+ echo
+
++ echo -e '\n### TC24: Integration - create then immediately fetch by id (dependency check) ###'
+
+### TC24: Integration - create then immediately fetch by id (dependency check) ###
+++ curl -s -m 3 -X POST http://127.0.0.1:5000/users -H 'Content-Type: application/json' -d '{"name":"Integration Test","email":"integration.test@example.com","status":"active"}'
+++ python3 -c 'import sys,json; print(json.load(sys.stdin)['\''id'\''])'
++ NEW_ID=13
++ echo 'Created id: 13'
+Created id: 13
++ curl -s -m 3 -w '\nHTTP:%{http_code}\n' http://127.0.0.1:5000/users/13
+{"email":"integration.test@example.com","id":13,"name":"Integration Test","status":"active"}
+
+HTTP:200
++ echo -e '\n### TC25: Integration - update then verify persisted (dependency/DB check) ###'
+
+### TC25: Integration - update then verify persisted (dependency/DB check) ###
++ curl -s -m 3 -X PUT http://127.0.0.1:5000/users/13 -H 'Content-Type: application/json' -d '{"status":"inactive"}'
++ curl -s -m 3 -w '\nHTTP:%{http_code}\n' http://127.0.0.1:5000/users/13
+{"email":"integration.test@example.com","id":13,"name":"Integration Test","status":"inactive"}
+
+HTTP:200
++ echo -e '\n### TC26: Regression - SQL injection style name still stored safely, table intact ###'
+
+### TC26: Regression - SQL injection style name still stored safely, table intact ###
++ curl -s -m 3 -w '\nHTTP:%{http_code}\n' -X POST http://127.0.0.1:5000/users -H 'Content-Type: application/json' -d '{"name":"Robert\"); DROP TABLE users;--","email":"sqlcheck@example.com","status":"active"}'
+{"email":"sqlcheck@example.com","id":14,"name":"Robert\"); DROP TABLE users;--","status":"active"}
+
+HTTP:201
++ echo 'Table still queryable after SQLi attempt:'
+Table still queryable after SQLi attempt:
++ curl -s -m 3 -w '\nHTTP:%{http_code}\n' http://127.0.0.1:5000/users
++ python3 -c 'import sys,json; print('\''Total users:'\'', len(json.load(sys.stdin)))'
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 340, in decode
+    raise JSONDecodeError("Extra data", s, end)
+json.decoder.JSONDecodeError: Extra data: line 3 column 1 (char 1195)
++ echo -e '\n### TC27: Smoke - DB survives across multiple rapid requests ###'
+
+### TC27: Smoke - DB survives across multiple rapid requests ###
++ for i in 1 2 3
++ curl -s -m 3 -o /dev/null -w 'health check 1: HTTP %{http_code}\n' http://127.0.0.1:5000/health
+health check 1: HTTP 200
++ for i in 1 2 3
++ curl -s -m 3 -o /dev/null -w 'health check 2: HTTP %{http_code}\n' http://127.0.0.1:5000/health
+health check 2: HTTP 200
++ for i in 1 2 3
++ curl -s -m 3 -o /dev/null -w 'health check 3: HTTP %{http_code}\n' http://127.0.0.1:5000/health
+health check 3: HTTP 200
++ echo -e '\n=== DONE, killing app ==='
+
+=== DONE, killing app ===
++ kill 219

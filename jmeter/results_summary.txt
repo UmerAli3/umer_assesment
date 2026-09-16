@@ -1,0 +1,75 @@
+Total samples: 14792
+
+--- OVERALL (all endpoints combined) ---
+  Samples:      14792
+  Errors:       74 (0.50%)
+  Throughput:   248.98 req/s
+  Average (ms): 372.6
+  Median  (ms): 252.0
+  P90     (ms): 584.0
+  P95     (ms): 981.9
+  P99     (ms): 3963.1
+  Min     (ms): 1
+  Max     (ms): 5772
+
+--- 01 GET /health ---
+  Samples:      2972
+  Errors:       0 (0.00%)
+  Throughput:   50.08 req/s
+  Average (ms): 164.1
+  Median  (ms): 144.0
+  P90     (ms): 307.0
+  P95     (ms): 367.4
+  P99     (ms): 500.6
+  Min     (ms): 1
+  Max     (ms): 688
+
+--- 02 GET /users ---
+  Samples:      2969
+  Errors:       0 (0.00%)
+  Throughput:   50.09 req/s
+  Average (ms): 306.4
+  Median  (ms): 280.0
+  P90     (ms): 535.2
+  P95     (ms): 638.0
+  P99     (ms): 1031.2
+  Min     (ms): 7
+  Max     (ms): 1673
+
+--- 03 GET /users/1 ---
+  Samples:      2957
+  Errors:       0 (0.00%)
+  Throughput:   49.89 req/s
+  Average (ms): 255.0
+  Median  (ms): 231.0
+  P90     (ms): 428.4
+  P95     (ms): 566.2
+  P99     (ms): 997.4
+  Min     (ms): 3
+  Max     (ms): 1607
+
+--- 04 GET /users filter active ---
+  Samples:      2953
+  Errors:       0 (0.00%)
+  Throughput:   49.87 req/s
+  Average (ms): 304.7
+  Median  (ms): 273.0
+  P90     (ms): 525.8
+  P95     (ms): 652.0
+  P99     (ms): 1081.9
+  Min     (ms): 13
+  Max     (ms): 1798
+
+--- 05 POST /users create ---
+  Samples:      2941
+  Errors:       74 (2.52%)
+  Throughput:   49.69 req/s
+  Average (ms): 836.5
+  Median  (ms): 364.0
+  P90     (ms): 2361.0
+  P95     (ms): 3974.0
+  P99     (ms): 5268.0
+  Min     (ms): 6
+  Max     (ms): 5772
+
+Saved to results/summary_stats.json

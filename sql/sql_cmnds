@@ -1,0 +1,72 @@
+SELECT id, name, email, status
+FROM users
+WHERE email = 'ali.khan@example.com';
+
+SELECT id, name, email, status
+FROM users
+WHERE status = 'active'
+ORDER BY id;
+
+SELECT u.id, u.name, u.status, o.id AS order_id, o.amount, o.order_status, o.created_at
+FROM users u
+JOIN orders o ON o.user_id = u.id
+ORDER BY u.id
+LIMIT 10;
+SELECT u.id, u.name, u.status, o.id AS order_id, o.amount, o.order_status, o.created_at
+FROM users u
+JOIN orders o ON o.user_id = u.id
+ORDER BY u.id
+LIMIT 10;
+SELECT
+    u.id, u.name,
+    COUNT(o.id)            AS order_count,
+    ROUND(SUM(o.amount),2) AS total_spent
+FROM users u
+JOIN orders o ON o.user_id = u.id
+GROUP BY u.id, u.name
+HAVING COUNT(o.id) > 200
+ORDER BY total_spent DESC;
+SELECT name, COUNT(*) AS occurrences, GROUP_CONCAT(email) AS emails
+FROM users
+GROUP BY name
+HAVING COUNT(*) > 1;
+SELECT id, user_id, amount, order_status, created_at
+FROM orders
+WHERE order_status = 'completed'
+  AND created_at BETWEEN '2025-06-01' AND '2025-06-30'
+ORDER BY created_at
+LIMIT 10;
+
+
+
+
+slow 
+
+
+SELECT o.id, o.amount, o.order_status, o.created_at
+FROM orders o
+JOIN users u ON u.id = o.user_id
+WHERE LOWER(u.email) = LOWER('bilal.raza@example.com')
+  AND o.order_status = 'completed'
+  AND EXISTS (
+      SELECT 1
+      FROM orders o2
+      WHERE o2.user_id = o.user_id
+        AND o2.order_status = o.order_status
+        AND o2.amount >= o.amount
+  )
+ORDER BY LOWER(u.email), o.created_at DESC;
+
+
+
+indexing 
+
+CREATE INDEX IF NOT EXISTS idx_orders_user_id
+ON orders(user_id);
+
+SELECT o.id, o.amount, o.order_status, o.created_at
+FROM orders o
+JOIN users u ON u.id = o.user_id
+WHERE u.email = 'bilal.raza@example.com'
+  AND o.order_status = 'completed';
+

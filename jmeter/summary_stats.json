@@ -1,0 +1,88 @@
+{
+  "overall": {
+    "label": "OVERALL (all endpoints combined)",
+    "samples": 14792,
+    "errors": 74,
+    "error_pct": 0.5,
+    "throughput": 248.98,
+    "avg_ms": 372.6,
+    "median_ms": 252.0,
+    "p90_ms": 584.0,
+    "p95_ms": 981.9,
+    "p99_ms": 3963.1,
+    "min_ms": 1,
+    "max_ms": 5772
+  },
+  "per_endpoint": [
+    {
+      "label": "01 GET /health",
+      "samples": 2972,
+      "errors": 0,
+      "error_pct": 0.0,
+      "throughput": 50.08,
+      "avg_ms": 164.1,
+      "median_ms": 144.0,
+      "p90_ms": 307.0,
+      "p95_ms": 367.4,
+      "p99_ms": 500.6,
+      "min_ms": 1,
+      "max_ms": 688
+    },
+    {
+      "label": "02 GET /users",
+      "samples": 2969,
+      "errors": 0,
+      "error_pct": 0.0,
+      "throughput": 50.09,
+      "avg_ms": 306.4,
+      "median_ms": 280,
+      "p90_ms": 535.2,
+      "p95_ms": 638.0,
+      "p99_ms": 1031.2,
+      "min_ms": 7,
+      "max_ms": 1673
+    },
+    {
+      "label": "03 GET /users/1",
+      "samples": 2957,
+      "errors": 0,
+      "error_pct": 0.0,
+      "throughput": 49.89,
+      "avg_ms": 255.0,
+      "median_ms": 231,
+      "p90_ms": 428.4,
+      "p95_ms": 566.2,
+      "p99_ms": 997.4,
+      "min_ms": 3,
+      "max_ms": 1607
+    },
+    {
+      "label": "04 GET /users filter active",
+      "samples": 2953,
+      "errors": 0,
+      "error_pct": 0.0,
+      "throughput": 49.87,
+      "avg_ms": 304.7,
+      "median_ms": 273,
+      "p90_ms": 525.8,
+      "p95_ms": 652.0,
+      "p99_ms": 1081.9,
+      "min_ms": 13,
+      "max_ms": 1798
+    },
+    {
+      "label": "05 POST /users create",
+      "samples": 2941,
+      "errors": 74,
+      "error_pct": 2.52,
+      "throughput": 49.69,
+      "avg_ms": 836.5,
+      "median_ms": 364,
+      "p90_ms": 2361.0,
+      "p95_ms": 3974.0,
+      "p99_ms": 5268.0,
+      "min_ms": 6,
+      "max_ms": 5772
+    }
+  ]
+}

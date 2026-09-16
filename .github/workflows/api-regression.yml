@@ -1,0 +1,70 @@
+name: API Regression Tests
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  api-regression:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          pip install -r app/requirements.txt
+          pip install -r app/requirements-dev.txt
+
+      - name: Start API
+        run: |
+          rm -f app_test.db
+
+          DATABASE_PATH=$PWD/app_test.db PORT=5000 \
+          nohup python3 app/app.py > app.log 2>&1 &
+
+          echo $! > app.pid
+
+          for i in 1 2 3 4 5
+          do
+            if curl -sf http://localhost:5000/health
+            then
+              echo "API started successfully"
+              break
+            fi
+
+            echo "Waiting for API..."
+            sleep 2
+          done
+
+          curl -sf http://localhost:5000/health
+
+      - name: Run pytest API regression tests
+        run: |
+          pytest regres_test/test_regression.py -v \
+            --junitxml=pytest-results.xml
+
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-api-test-report
+          path: |
+            pytest-results.xml
+            app.log
+
+      - name: Stop API
+        if: always()
+        run: |
+          if [ -f app.pid ]; then
+            kill "$(cat app.pid)" 2>/dev/null || true
+          fi
